@@ -3,7 +3,7 @@
 import streamlit as st
 import random
 import urllib.parse
-from database import get_phrases_by_category, get_all_categories, get_all_phrases_flat
+# from database import get_phrases_by_category, get_all_categories, get_all_phrases_flat
 
 # 1. 페이지 기본 설정 및 스타일 초기화
 st.set_page_config(
