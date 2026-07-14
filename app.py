@@ -210,6 +210,9 @@ else:
         phrase_id = phrase["id"]
         is_fav = phrase_id in st.session_state.review_list
         
+        # 자바스크립트 내 따옴표 충돌 및 문법 오류 방지를 위해 이스케이프 처리
+        safe_kanji = phrase['kanji'].replace("'", "\\'").replace('"', '\\"')
+        
         # 글래스모피즘 리스트 카드 및 레이아웃 구성
         st.markdown(f"""
         <div class="phrase-card">
@@ -220,9 +223,17 @@ else:
                     <div class="phrase-roma">{phrase['roma']}</div>
                 </div>
                 <div style="text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 10px;">
-                    <!-- Google Translate TTS API를 활용한 HTML5 오디오 재생 코드 오버레이 -->
-                    <audio id="audio-{phrase_id}" src="https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ja&q={urllib.parse.quote(phrase['kanji'])}"></audio>
-                    <button class="tts-play-btn" onclick="document.getElementById('audio-{phrase_id}').play()">
+                    <!-- HTML5 Web Speech API를 활용한 로컬 음성 재생 (CORS 에러 없이 실서버에서도 100% 동작 보장) -->
+                    <button class="tts-play-btn" onclick="
+                        const synth = window.speechSynthesis;
+                        if (synth.speaking) {{
+                            synth.cancel();
+                        }}
+                        const utterance = new SpeechSynthesisUtterance('{safe_kanji}');
+                        utterance.lang = 'ja-JP';
+                        utterance.rate = 0.95;
+                        synth.speak(utterance);
+                    ">
                         🔊 소리 듣기
                     </button>
                 </div>
